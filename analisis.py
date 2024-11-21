@@ -9,34 +9,6 @@ import geopandas as gpd
 
 all = gpd.read_file('curitiba_bairros_completo.geojson')
 
-selected_columns = [
-    'areasVerdesM2',
-    'popHabPHa',
-    'popTotal',
-    
-    'popHomens', 
-    'popBrancos',
-    'porcentagem_brancos',
-    'pop15a64',
-    'porcentagem_adultos',
-    'indiceEnvelhecimento',
-
-    'rendaMediacRendimento',
-    'rendaMedianacRendimento', 
-
-    'area',
-    'area_verde',
-    'porcentagem_cobertura',
-
-    'num_obitos_covid',
-    'num_atendimentos_covid',
-    'num_atendimentos_dengue',
-    'num_atendimentos_saude_ja',
-    'num_unidades_saude_bairro',
-]
-
-all = all[selected_columns]
-
 all['porcentagem_cobertura'] = all['area_verde'] / all['area']
 
 all['porcentagem_brancos'] = all['popBrancos'] / all['popTotal']
@@ -48,8 +20,11 @@ all['taxa_atendimentos_dengue'] = all['num_atendimentos_dengue'] / all['popTotal
 all['taxa_atendimentos_saude'] = all['num_atendimentos_saude_ja'] / all['popTotal']
 all['taxa_unidades_saude'] = all['num_unidades_saude_bairro'] / all['popTotal']
 
+all['populacao_por_hectare'] = all['popHabPHa']
+
 selected_columns = [
-    'popHabPHa',    
+    'Localidade',
+    'populacao_por_hectare',    
     'porcentagem_brancos',
     'porcentagem_adultos',
     'indiceEnvelhecimento',
@@ -68,10 +43,12 @@ all = all[selected_columns]
 res = all.corr(numeric_only=True)
 
 plt.figure(figsize=(10, 8))
-sns.heatmap(res, annot=True, cmap='coolwarm', fmt='.2f', 
-            cbar=True, square=True, linewidths=0.5, linecolor='black')
-plt.title('Correlation Matrix')
-plt.xticks(rotation=45, ha='right')
+mask = np.triu(np.ones_like(res, dtype=bool))
+sns.heatmap(res, annot=True, cmap='coolwarm', fmt='.2f',
+            cbar=True, square=True, linewidths=0, linecolor='black',
+            mask=mask)
+plt.title('Matriz de correlação')
+plt.xticks(rotation=45, ha='right') 
 plt.yticks(rotation=0)
 plt.tight_layout()
 plt.savefig('correlation_matrix.png', dpi=300)
