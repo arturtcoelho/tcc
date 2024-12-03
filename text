@@ -1,0 +1,189 @@
+\chapter{background (ou fundamentação teórica?)}
+
+Neste capitulo sao apresentados os principais conceitos e ferramentas utilizadas em seu decorrer.
+
+\section{modelos de regressão machine learning}
+
+Modelos de regressão em machine learning são algoritmos projetados para prever valores contínuos com base em variáveis preditoras. Diferentemente das abordagens estatísticas tradicionais, os modelos de machine learning, como regressão linear regularizada (Ridge, Lasso), regressão por árvores (Decision Trees, Random Forests) e regressão por aprendizado profundo (redes neurais), podem lidar com dados complexos, não-lineares e de alta dimensionalidade. Eles se destacam por sua capacidade de generalizar padrões nos dados e frequentemente utilizam técnicas de regularização e validação cruzada para melhorar a precisão e evitar overfitting. Esses modelos são amplamente aplicados em áreas como previsão de vendas, análise de séries temporais e modelagem de risco financeiro.
+
+\subsection{Black Boxes}
+Muitos modelos de regressão em machine learning, especialmente os mais complexos como Random Forests, Gradient Boosting e redes neurais, são frequentemente considerados "black boxes" porque seu funcionamento interno é difícil de interpretar. Embora esses modelos sejam altamente eficazes em capturar padrões complexos nos dados, a falta de transparência na forma como as variáveis influenciam as previsões pode limitar sua aplicação em cenários que exigem interpretabilidade, como saúde ou finanças. Isso cria uma necessidade de técnicas de explicabilidade, que ajudam a revelar a contribuição de cada variável, aumentando a confiança no uso desses modelos em decisões críticas.
+% \cite{bboxes2023}
+
+\section{Extremely randomized trees}
+Extremely Randomized Trees (ExtraTrees) é um algoritmo de machine learning baseado em ensembles de árvores de decisão, projetado para tarefas de classificação e regressão. Ele combina várias árvores para melhorar a robustez e a precisão, mas introduz maior aleatoriedade ao dividir os dados. Em vez de buscar os melhores pontos de divisão para cada feature, o ExtraTrees seleciona pontos de divisão aleatórios, tornando o treinamento mais rápido e reduzindo o risco de overfitting.
+\cite{ertx2006}
+
+\section{Introdução ao SHAP}
+A habilidade de interpretar corretamente a previsão de um modelo é de extrema importância, provendo confiança para o usuário, assim como uma ferramenta para a melhoria do modelo, dando apoio ao entendimento do processo. Com o crescente conflito entre acurácia explicabilidade de modelos de machine learning, diversos métodos explicativos foram criados, trabalhamos com SHAP (\textbf{SH}apley \textbf{A}dditive ex\textbf{P}lanations) para explicar a importância de features em um modelo.
+
+O framework SHAP é um método unificado de explicabilidade para modelos de machine learning que utiliza a teoria dos valores de Shapley, oriunda da teoria dos jogos, para medir a contribuição de cada variável nas predições de modelos. Ele calcula de forma combinatória o impacto de cada variável. Calculando com uma média ponderada, obtêm-se valores SHAP que indicam a importância, assim como  se a influência foi positiva ou negativa.
+\cite{scott2017unified}
+
+%%%%%%%%%%%%%%%% 3
+
+\chapter{comparativo trabalhos relacionados}
+
+Este capitulo apresenta uma visão sobre trabalhos similares, revendo como os dados socioeconômicos e demográficos afetam a previsão do numero de casos similares.
+
+A pandemia de COVID-19 evidenciou disparidades sociais significativas, sendo mais prevalente entre minorias raciais e étnicas, bem como em populações de classes socioeconômicas mais baixas. Estes fatores são amplamente estudados, porém a níveis municipais, estaduais e federais, os bairros tem grande influencia na desigualdade de saúde \cite{kawachi2003neighborhoods}
+
+Ao fazer a previsão de casos diários de COVID-19 na Indonésia, \cite{hasanah2023impact}, utilizou 17 parâmetros de dados socioeconômicos e demográficos entre três centros populacionais, com diferentes distribuições, concluindo que os centros mais ricos, ou seja, com maior PIB per capita, tiveram mais casos da doença, enquanto centros rurais, com população por área mais baixa, apresentaram menos casos.
+
+Enquanto \cite{levy2022neighborhood} apresentou uma abordagem mais completa, realizando uma predição baseada na desigualdade socioeconômica nos bairros de São Francisco, utilizando a mobilidade urbana como parâmetro principal.
+
+Porém um fator que poderia ser aprimorado nestes estudos, é uma analise posterior mais completa das features, tendo em conta que em ambos a analise é feita sem o auxilio de ferramentas explicitas nos trabalhos.
+
+%%%%%%%%%%%%%%%% 4
+
+\chapter{proposta}
+
+Este capitulo descreve os procedimentos para a execução do trabalho, desde a organização do dataset, o treinamento do modelo de machine learning, e a extração das importâncias das variáveis.
+
+\section{dataset}
+
+O dataset utilizado foi construído a partir de dados do Censo demográfico do Brasil de \textbf{ 2010}, somado a dados da Secretaria Municipal de Saúde de Curitiba, escolhendo as variáveis relevantes em diversas categorias. Nos quesitos socioeconômicos: população, renda e cor, também relevantes a saúde, como cobertura verde.
+Os dados oriundos do censo do IBGE estão agregados por bairro, enquanto os dados da SMS de Curitiba foram agregados manualmente na mesma granularidade.
+
+Ao analisar o dataset, percebeu-se que devido a grande disparidade de populações entre os bairros, acarretando em correlações triviais.
+
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=12cm]{2-fundam/figs/correlation_matrix_original.png}
+\caption{Matriz de correlação de dados originais do dataset, pode-se observar que ha correlações triviais em todos os dados relacionados a população, devido a natureza da separação dos dados em bairros}
+\label{fig:comun-intra-inter}
+\end{figure}
+
+Portanto precisamos realizar a padronização dos dados por taxas. Os dados foram normalizados por população, ou área (porcentagem de cobertura verde). Desta maneira os dados são invariáveis a área ou população total de um bairro.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=12cm]{2-fundam/figs/correlation_matrix.png}
+\caption{Matriz de correlação das variáveis escolhidas}
+\label{fig:comun-intra-inter}
+\end{figure}
+
+Com os dados normalizados podemos observar correlações mais plausíveis, sem nenhuma correlação trivial. Desta maneira o modelo construído terá uma base mais solida e poderá mostrar resultados mais consistente entre bairros, independente da população ou área.
+Foram escolhidas 6 variáveis como input, para prever a 7a variável como output. As variáveis levadas em consideração no modelo foram selecionadas devido a sua relevância e indenpendência linear entre si, são as seguintes:
+
+\begin{figure}[H]
+\begin{longtable}{p{1cm} p{5cm} p{10cm}}
+ & \textbf{Nome} & \textbf{Descrição} \\ \hline
+1 & populacao\_por\_hectare & Descreve a densidade populacional. \\ 
+2 & porcentagem\_brancos & Porcentagem de pessoas autodeclaradas brancas. \\ 
+3 & porcentagem\_adultos & Porcentagem de indivíduos entre 15 e 64 anos. \\ 
+4 & indiceEnvelhecimento & Índice que mede o envelhecimento da população. \\ 
+5 & rendaMedianacRendimento & Mediana da renda familiar por indivíduo. \\ 
+6 & porcentagem\_cobertura & Porcentagem de cobertura verde na área total. \\ 
+7 & \textbf{taxa\_atendimentos\_covid} & Taxa de atendimentos médicos relacionados à COVID-19. \\ 
+\caption{Tabela com variáveis e suas descrições}
+\label{tab:variables}
+\end{longtable}
+\end{figure}
+
+Sendo que iremos prever especificamente a Taxa de atendimentos por COVID-19
+% \subsection{Extra Trees}
+% Por conta de sua aleatoriedade, o modelo é capaz de prover boas métricas com datasets relativamente pequenos . . .
+
+\section{modelo machine learning}
+
+\subsection{Limitações}
+
+Dado o dataset compilado, analisado e normalizado, com 75 linhas e 7 colunas, representando os bairros de Curitiba, e as variáveis escolhidas. Reconhecemos que o tamanho do dataset, considerado pequeno para o estudo, assim como a diferença de tempo entre os dados do censo e os dados da pandemia, são fatores limitantes para a performance de qualquer modelo criado. Mesmo com as mitigações feitas para garantir a qualidade dos dados, precisamos escolher um modelo que consiga realizar uma explicação compreensível dos dados.
+
+Precisamos portanto de um modelo que seja robusto a possíveis outliers e que seja resistente a overfitting, podendo trabalhar com um tamanho reduzido de dados. Por isso o modelo escolhido foi o Extra Trees \cite{ertx2006}, um modelo de ensamble baseado em Random Forest, porém realizando o corte dos nodos em pontos aleatórios, gerando árvores completamente aleatórias.
+
+\subsection{Obtendo parâmetros}
+
+Para melhorar a eficiência do modelo final, realizamos um processo de grid search, para buscar os parâmetros ideais para o modelo. O processo consiste em testar diversos parâmetros do modelo, para obter melhores métricas. Os principais 
+
+\subsection{Treinamento}
+
+Para o treinamento do modelo, iremos realizar, de maneira independente, 15 processos completos de treinamento e validação, para podermos analisar a influência da aleatoriedade, tanto na separação dos dados entre treino e teste quanto no treinamento. 
+
+O processo é realizado em etapas, considerando o dataset já existente:
+\begin{enumerate}
+    \item Separação de dados em treino e teste, com uma distribuição de 80/20, respectivamente
+    \item Ajuste do modelo, utilizando os parâmetros obtidos
+    \item Inferência dos dados, utilizando os dados de teste
+    \item Validação dos dados de teste, de acordo com as métricas escolhidas
+\end{enumerate}
+
+\underline{Este estudo pode ser visualizado no apêndice (?)}
+
+%%%%%%%%%%%%%%%% 5
+
+\chapter{resultados}
+Aqui vamos apresentar os resultados do modelo, os valores obtidos para avaliar o modelo de acordo com as métricas selecionadas, e os valores SHAP obtidos, que definem a importância das variáveis
+
+\section{Métricas}
+As métricas que iremos utilizar para avaliar nosso modelo de regressão são: Erro Médio Absoluto (MAE), o Erro Quadrático Médio (MSE), a Raiz do Erro Quadrático Médio (RMSE) e o Erro Percentual Absoluto Médio (MAPE). Para estas métricas, valores mais baixos indicam melhor desempenho. Também utilizaremos o Coeficiente de Determinação (R²), sendo melhor quando mais alto.
+
+\begin{table}[!htp]
+\centering
+\caption{Resultados treinamento}
+\label{tab:modelos}
+\begin{tabular}{|c|c|c|c|}
+\cline{2-4}
+\multicolumn{1}{c|}{}& Mínimo & Média & Máximo\\
+\hline
+\texttt{MSE} & 0.0027 & 0.0070 & 0.0142\\
+\hline
+\texttt{RMSE} & 0.0521 & 0.0814 &  0.1194 \\
+\hline
+\texttt{MAE} & 0.0430 & 0.0564 &  0.0840 \\
+\hline
+\texttt{MAPE} & 0.1152 & 0.1675  & 0.2857 \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{resultados modelo}
+Aqui temos os resultados do modelo em gráficos, como sua predição esta disposta, etc
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=8cm]{2-fundam/figs/map_error.png}
+\caption{Mapa da diferença entre a previsão do modelo e o valor real}
+\label{fig:comun-intra-inter}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=10cm]{2-fundam/figs/map_errorTest.png}
+\caption{Diferença entre previsão e real apenas nos dados de teste}
+\label{fig:comun-intra-inter}
+\end{figure}
+
+\section{explicação das features}
+Aqui temos as features explicadas pelo modelo shap
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=18cm]{2-fundam/figs/SHAPValues.png}
+\caption{Distribuição dos valores shap}
+\label{fig:comun-intra-inter}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=18cm]{2-fundam/figs/AvgShapImportance.png}
+\caption{Média dos valores SHAP, representando a importância}
+\label{fig:comun-intra-inter}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=18cm]{2-fundam/figs/SÃO MIGUEL.png}
+\caption{Influencia das variáveis na previsão de número de casos do bairro São Miguel}
+\label{fig:comun-intra-inter}
+\end{figure}
+
+% \subsection{}
+% obitos covid
+
+%%%%%%%%%%%%%%%%
+
+\chapter{conclusão}
+

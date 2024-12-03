@@ -28,14 +28,14 @@ selected_columns = [
     'porcentagem_brancos',
     'porcentagem_adultos',
     'indiceEnvelhecimento',
-    'rendaMediacRendimento',
+    # 'rendaMediacRendimento',
     'rendaMedianacRendimento', 
     'porcentagem_cobertura',
-    'taxa_obitos_covid',
+    # 'taxa_obitos_covid',
     'taxa_atendimentos_covid',
-    'taxa_atendimentos_dengue',
-    'taxa_atendimentos_saude',
-    'taxa_unidades_saude',
+    # 'taxa_atendimentos_dengue',
+    # 'taxa_atendimentos_saude',
+    # 'taxa_unidades_saude',
 ]
 all = all[selected_columns]
 
