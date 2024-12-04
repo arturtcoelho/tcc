@@ -7,10 +7,7 @@ data = pd.read_csv('dataTaxas.csv')
 
 X = data.drop(['Localidade',
                 'taxa_obitos_covid',
-                'taxa_atendimentos_covid',
-                'taxa_atendimentos_dengue',
-                'taxa_atendimentos_saude',
-                'taxa_unidades_saude'], axis=1)
+                'taxa_atendimentos_covid'], axis=1)
 
 y = data['taxa_atendimentos_covid']
 

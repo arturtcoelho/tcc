@@ -14,8 +14,8 @@ all['porcentagem_cobertura'] = all['area_verde'] / all['area']
 all['porcentagem_brancos'] = all['popBrancos'] / all['popTotal']
 all['porcentagem_adultos'] = all['pop15a64'] / all['popTotal']
 
-all['taxa_obitos_covid'] = all['num_obitos_covid'] / all['popTotal']
-all['taxa_atendimentos_covid'] = all['num_atendimentos_covid'] / all['popTotal']
+all['taxa_obitos_covid'] = all['num_obitos_covid'] / all['popTotal'] * 100000
+all['taxa_atendimentos_covid'] = (all['num_atendimentos_covid'] / all['popTotal']) * 100000
 all['taxa_atendimentos_dengue'] = all['num_atendimentos_dengue'] / all['popTotal']
 all['taxa_atendimentos_saude'] = all['num_atendimentos_saude_ja'] / all['popTotal']
 all['taxa_unidades_saude'] = all['num_unidades_saude_bairro'] / all['popTotal']
@@ -31,7 +31,7 @@ selected_columns = [
     # 'rendaMediacRendimento',
     'rendaMedianacRendimento', 
     'porcentagem_cobertura',
-    # 'taxa_obitos_covid',
+    'taxa_obitos_covid',
     'taxa_atendimentos_covid',
     # 'taxa_atendimentos_dengue',
     # 'taxa_atendimentos_saude',

@@ -37,14 +37,18 @@ from sklearn.model_selection import GridSearchCV
 X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=.2, random_state=123)
 
 param_grid = {
-    'n_estimators': [100, 200, 300, 400, 500],
-    'max_depth': [None, 5, 10, 15],
-    'min_samples_split': [2, 5, 10],
-    'min_samples_leaf': [1, 5, 10]
+    'n_estimators': [100, 200, 300, 500, 1000],       # Number of trees
+    'learning_rate': [0.01, 0.1, 0.2],    # Step size shrinkage
+    'max_depth': [3, 5, 7],               # Depth of each tree
+    'subsample': [0.6, 0.8, 1.0],         # Fraction of samples used for training
+    'colsample_bytree': [0.6, 0.8, 1.0],  # Fraction of features used per tree
+    'gamma': [0, 0.1, 0.2],               # Minimum loss reduction for split
+    'reg_alpha': [0, 1, 10],              # L1 regularization
+    'reg_lambda': [1, 10, 100]            # L2 regularization
 }
 
-etr = ExtraTreesRegressor(random_state=15)
-grid_search = GridSearchCV(etr, param_grid, cv=5, scoring='neg_mean_absolute_percentage_error')
+etr = XGBRegressor(random_state=15)
+grid_search = GridSearchCV(etr, param_grid, cv=3, scoring='neg_mean_absolute_percentage_error', verbose=1, n_jobs=-1)
 grid_search.fit(X_train, y_train)
 
 print("Best parameters found: ", grid_search.best_params_)
