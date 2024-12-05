@@ -2,7 +2,10 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from sklearn.ensemble import ExtraTreesRegressor
+from sklearn.ensemble import RandomForestRegressor
+
 from xgboost import XGBRegressor
+from lightgbm import LGBMRegressor
 from sklearn.linear_model import LinearRegression 
 
 from sklearn.model_selection import cross_val_score, KFold
@@ -40,15 +43,14 @@ for i in range(15):
                        n_estimators=500,
                         random_state=i*15)
     
-    # model = XGBRegressor(colsample_bytree=1.0, 
-    #                gamma= 0, 
-    #                learning_rate= 0.03, 
-    #                max_depth= 7, 
-    #                n_estimators= 200, 
-    #                reg_alpha= 0, 
-    #                reg_lambda= 100, 
-    #                subsample= 0.8, 
-    #                random_state=i*7)
+    # model = RandomForestRegressor(random_state=i*15)
+    # RandomForestRegressor = 0.158
+
+    # model = LGBMRegressor(random_state=i*15)
+    # LGBMRegressor = 0.158
+
+    # model = XGBRegressor(random_state=i*7)
+    # XGBRegressor = 0.175
 
 
     model.fit(X_train, y_train)
@@ -71,6 +73,8 @@ joblib.dump(closest_model, "model.pkl")
 # for i in range(len(mape)):
 #     print(f"{mape[i]}, {RMSE[i]}, {MAE[i]}")
 
+print(mape)
+
 print('mape' , sum(mape)/len(mape))
 print('mse' , sum(MSE)/len(MSE))
 # print('rmse' , sum(RMSE)/len(RMSE))
@@ -78,15 +82,15 @@ print('mae' , sum(MAE)/len(MAE))
 
 # exit()
 
-# SHAP values
-explainer = shap.Explainer(model)
-shap_values = explainer(X)
+# # SHAP values
+# explainer = shap.Explainer(model)
+# shap_values = explainer(X)
 
 
-# shap.plots.scatter(shap_values[:, 'indiceEnvelhecimento'])
-for x in X:
-    shap.plots.scatter(shap_values[:, x], color=shap_values)
-# for i in range(len(X)):
-#     shap.plots.waterfall(shap_values[i])
-shap.plots.beeswarm(shap_values, max_display=50)
-shap.plots.bar(shap_values)
+# # shap.plots.scatter(shap_values[:, 'indiceEnvelhecimento'])
+# for x in X:
+#     shap.plots.scatter(shap_values[:, x], color=shap_values)
+# # for i in range(len(X)):
+# #     shap.plots.waterfall(shap_values[i])
+# shap.plots.beeswarm(shap_values, max_display=50)
+# shap.plots.bar(shap_values)
