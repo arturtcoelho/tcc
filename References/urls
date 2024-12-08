@@ -11,3 +11,5 @@ https://github.com/shap/shap?tab=readme-ov-file
 
 Explicação do SHAP:
 https://towardsdatascience.com/from-shapley-to-shap-understanding-the-math-e7155414213b
+
+https://github.com/shap/shap/blob/8954b18871d230f139ed03b1fe644f98701394a2/shap/cext/tree_shap.h#L1120
