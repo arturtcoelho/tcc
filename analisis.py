@@ -22,6 +22,8 @@ all['taxa_unidades_saude'] = all['num_unidades_saude_bairro'] / all['popTotal']
 
 all['populacao_por_hectare'] = all['popHabPHa']
 
+print(all['popTotal'].mean())
+
 selected_columns = [
     'Localidade',
     'populacao_por_hectare',    

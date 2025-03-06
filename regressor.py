@@ -84,11 +84,8 @@ print('mae' , sum(MAE)/len(MAE))
 
 # SHAP values
 explainer = shap.Explainer(model)
-print(help(explainer))
 shap_values = explainer(X)
 
-
-# shap.plots.scatter(shap_values[:, 'indiceEnvelhecimento'])
 for x in X:
     shap.plots.scatter(shap_values[:, x], color=shap_values)
 # for i in range(len(X)):
